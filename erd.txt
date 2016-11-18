@@ -1,0 +1,31 @@
+
+     +-----------------+
+     | setup           | 
+     +-----------------+ 
+     | (K) id          |
+     | version         |
+     +-----------------+
+
+     +-----------------+                        +-----------------+
+     | user            |                        | survey_inbox    |
+     +-----------------+                        +-----------------+
+     | (K) id          |--+---+                 | (K) id          |
+     | login_name      |  |   |   +------------<| survey_id       |
+     | password        |  |   +---|------------<| user_id         |
+     +-----------------+  |       |             | status          |
+                          |       |             | create_datetime |
+                          |       |             | modify_datetime |
+     +-----------------+  |       |             +-----------------+
+     | surveys         |  |       | 
+     +-----------------+  |       | 
+     | (K) id          |--|-------+ 
+     | title           |  |
+     | creator         |>-+
+     | create_datetime |
+     | modifier        |
+     | modify_datetime |
+     | content         |
+     | notbefore       |
+     | notafter        |
+     | status          |
+     +-----------------+
