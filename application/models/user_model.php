@@ -69,4 +69,12 @@ class User_model extends CI_Model {
 			}
 		}
 	}
+
+	public function get_user_by_uid($uid) {
+		$this->db->select('id, login_name, name, email, attr1, attr2, attr3');
+		$this->db->from($this->table_name);
+		$this->db->where('id', $uid);
+		$query = $this->db->get();
+		return $query->row();
+	}
 }

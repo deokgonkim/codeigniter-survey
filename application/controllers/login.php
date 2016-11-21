@@ -26,7 +26,7 @@ class Login extends CI_Controller {
 			$this->load->view('login/login');
 			$this->load->view('templates/footer');
 		} else {
-			redirect('welcome', 'refresh');
+			redirect('home', 'refresh');
 		}
 	}
 
@@ -38,7 +38,8 @@ class Login extends CI_Controller {
 		try {
 			$data = $this->User_model->login($login_name, $password);
 			if ( $data ) {
-				$this->session->set_userdata('uid', $data->login_name);
+				$this->session->set_userdata('uid', $data->id);
+				$this->session->set_userdata('login', $data->login_name);
 				$groups = $this->Group_model->get_groups_by_uid($data->id);
 				$group_ids = array();
 				foreach( $groups as $group ) {
@@ -66,14 +67,15 @@ class Login extends CI_Controller {
 	}
 
 	public function logout() {
-
 		$this->session->unset_userdata('uid');
-		redirect('welcome', 'refresh');
+		$this->session->sess_destroy();
+		redirect('home', 'refresh');
 	}
 
 	function info() {
 		$this->logger->debug('uid ? ', $this->session->userdata('uid'));
 		$data['uid'] = $this->session->userdata('uid');
+		$data['login'] = $this->session->userdata('login');
 		$data['grp_ids'] = print_r($this->session->userdata('grp_ids'), TRUE);
 		$data['can_admin'] = $this->session->userdata('admin');
 		$data['can_modify'] = $this->session->userdata('modify');

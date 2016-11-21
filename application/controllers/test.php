@@ -1,10 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Test extends MY_Controller {
+class Test extends Base_Controller {
 
 	function __construct() {
 		parent::__construct();
+		$this->load->model('User_model');
 		$this->load->model('Group_model');
+		$this->load->model('Survey_model');
 	}
 
 	public function index2() {
@@ -13,6 +15,17 @@ class Test extends MY_Controller {
 //		$data = $this->Group_model->get_groups();
 		header('Content-Type: text/html; charset=UTF-8');
 		echo "this is test controller" . print_r($data, TRUE);
+	}
+
+	public function survey() {
+		$data = $this->Survey_model->get_surveys_received(1, TRUE);
+		header('Content-Type: text/html; charset=UTF-8');
+		echo "this is test controller" . print_r($data, TRUE);
+	}
+
+	public function user_by_uid() {
+		header('Content-Type: text/html; charset=UTF-8');
+		echo print_r($this->User_model->get_user_by_uid(1), TRUE);
 	}
 
 	public function index() {

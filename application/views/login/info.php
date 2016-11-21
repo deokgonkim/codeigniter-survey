@@ -15,6 +15,7 @@
 	</style>
 	<ul>
 	<li><strong>userdata('uid')</strong> : <?php echo $uid; ?></li>
+	<li><strong>userdata('login')</strong> : <?php echo $login; ?></li>
 	<li><strong>userdata('grp_ids')</strong> : <?php echo $grp_ids; ?></li>
 	<li><strong>userdata('admin')</strong> : <?php echo $can_admin; ?></li>
 	<li><strong>userdata('modify')</strong> : <?php echo $can_modify; ?></li>

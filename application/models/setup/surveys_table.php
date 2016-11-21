@@ -12,6 +12,9 @@
  * content	TEXT		: 설문 내용
  * notbefore	DATETIME	: 설문 기간 시작
  * notafter	DATETIME	: 설문 기간 종료
+ * surveyor_name VARCHAR(80)	: 설문 조사자 이름 ( ex. 조사팀)
+ * surveyor_mail VARCHAR(80)	: 설문 조사자 메일주소
+ * surveyor_phone VARCHAR(80)	: 설문 조사자 전화번호
  * status	INT		: 설문 상태 (준비 1, 게시2, 종료3)
  *
  * @author dgkim
@@ -35,6 +38,9 @@ class Surveys_table extends CI_Model {
 		$this->dbforge->add_field('content TEXT');
 		$this->dbforge->add_field('notbefore DATETIME');
 		$this->dbforge->add_field('notafter DATETIME');
+		$this->dbforge->add_field('surveyor_name VARCHAR(80)');
+		$this->dbforge->add_field('surveyor_mail VARCHAR(80)');
+		$this->dbforge->add_field('surveyor_phone VARCHAR(80)');
 		$this->dbforge->add_field('status INT');
 
 		$this->dbforge->create_table($this->table_name, FALSE);

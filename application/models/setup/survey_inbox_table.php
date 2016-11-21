@@ -16,7 +16,7 @@
  */
 class Survey_inbox_table extends CI_Model {
 
-	var $table_name = 'survey_inbox';
+	private $table_name = 'survey_inbox';
 
 	public function __construct() {
 		parent::__construct();
@@ -35,16 +35,15 @@ class Survey_inbox_table extends CI_Model {
 	}
 
 	public function fulfill_table() {
+		$query = $this->db->get_where($this->table_name, array('id' => '1'), 1, 0);
+		if ( $query->result() )	{
+			throw new Exception('default data exists');
+		}
 		$data = array(
 				'survey_id' => 1,
 				'user_id' => 1,
 				'create_datetime' => date_create()->format('Y-m-d H:i:s')
 			);
-
-		$query = $this->db->get_where($this->table_name, array('id' => '1'), 1, 0);
-		if ( $query->result() )	{
-			throw new Exception('default data exists');
-		}
 		$this->db->insert($this->table_name, $data);
 	}
 
