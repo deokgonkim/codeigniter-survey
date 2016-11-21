@@ -38,7 +38,7 @@ class Login extends CI_Controller {
 			$data = $this->User_model->login($login_name, $password);
 
 			if ( $data ) {
-				$this->session->set_userdata('login', $data->login_name);
+				$this->session->set_userdata('uid', $data->login_name);
 			} else {
 				$this->form_validation->set_message('check_database', 'Invalid Login Name or Password');
 			}
@@ -49,13 +49,13 @@ class Login extends CI_Controller {
 
 	public function logout() {
 
-		$this->session->unset_userdata('login');
+		$this->session->unset_userdata('uid');
 		redirect('welcome', 'refresh');
 	}
 
 	function info() {
-		$this->logger->debug('login ? ', $this->session->userdata('login'));
-		$data['login'] = $this->session->userdata('login');
+		$this->logger->debug('uid ? ', $this->session->userdata('uid'));
+		$data['login'] = $this->session->userdata('uid');
 		$data['name'] = 'string name';
 		$this->load->view('templates/header', $data);
 		$this->load->view('login/info', $data);

@@ -23,7 +23,8 @@
 |
 */
 //$config['base_url'] = '';
-$config['base_url'] = 'http://survey.handong.dev.readershp.com/survey/';
+//$config['base_url'] = 'http://survey.handong.dev.readershp.com/survey/';
+$config['base_url'] = 'http://dev.dgkim.net/survey/';
 
 /*
 |--------------------------------------------------------------------------

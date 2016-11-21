@@ -2,13 +2,24 @@
 
 /**
  * 설문조사 컨트롤러
+ * 
+ * @author dgkim
  */
 class Surveys extends CI_Controller {
+
+	function __construct() {
+		parent::__construct();
+		$this->load->helper('url');
+		$this->load->model('Survey_model');
+	}
 
 	/**
 	 */
 	public function index() {
-		$this->load->view('surveys/index', NULL);
+		$data['surveys'] = $this->Survey_model->get_surveys();
+		$this->load->view('templates/header', $data);
+		$this->load->view('surveys/index', $data);
+		$this->load->view('templates/footer', $data);
 	}
 
 	/*
@@ -18,7 +29,10 @@ class Surveys extends CI_Controller {
 		if ( $survey_id == '0' ) {
 			show_404();
 		}
-		$this->load->view('surveys/view', NULL);
+		$data['survey'] = $this->Survey_model->get_survey($survey_id);
+		$this->load->view('templates/header', $data);
+		$this->load->view('surveys/view', $data);
+		$this->load->view('templates/footer', $data);
 	}
 
 	/**
