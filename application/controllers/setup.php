@@ -2,6 +2,8 @@
 
 /**
  * Database 초기화, 초기 데이터 적재 역할을 담당하는 컨트롤러
+ *
+ * @author dgkim
  */
 class Setup extends CI_Controller {
 
@@ -16,6 +18,8 @@ class Setup extends CI_Controller {
 		$this->load->model('setup/Setup_table');
 		$this->load->model('setup/Realm_table');
 		$this->load->model('setup/User_table');
+		$this->load->model('setup/Group_table');
+		$this->load->model('setup/Group_member_table');
 		$this->load->model('setup/Surveys_table');
 	}
 
@@ -74,6 +78,28 @@ class Setup extends CI_Controller {
 		}
 		$i ++;
 
+		$table_name = 'group';
+		$data['tables'][$i]['name'] = $table_name;
+		if ( !$this->db->table_exists($table_name) ) {
+			$this->Group_table->create_table();
+			$this->Group_table->fulfill_table();
+			$data['tables'][$i]['status'] = 'OK';
+		} else {
+			$data['tables'][$i]['status'] = 'Already exists';
+		}
+		$i ++;
+
+		$table_name = 'group_member';
+		$data['tables'][$i]['name'] = $table_name;
+		if ( !$this->db->table_exists($table_name) ) {
+			$this->Group_member_table->create_table();
+			$this->Group_member_table->fulfill_table();
+			$data['tables'][$i]['status'] = 'OK';
+		} else {
+			$data['tables'][$i]['status'] = 'Already exists';
+		}
+		$i ++;
+
 		$table_name = 'surveys';
 		$data['tables'][$i]['name'] = $table_name;
 		if ( !$this->db->table_exists($table_name) ) {
@@ -113,6 +139,16 @@ class Setup extends CI_Controller {
 
 		$data['tables'][$i]['name'] = 'user';
 		$this->User_table->drop_table();
+		$data['tables'][$i]['status'] = 'OK';
+		$i ++;
+
+		$data['tables'][$i]['name'] = 'group';
+		$this->Group_table->drop_table();
+		$data['tables'][$i]['status'] = 'OK';
+		$i ++;
+
+		$data['tables'][$i]['name'] = 'group_member';
+		$this->Group_member_table->drop_table();
 		$data['tables'][$i]['status'] = 'OK';
 		$i ++;
 

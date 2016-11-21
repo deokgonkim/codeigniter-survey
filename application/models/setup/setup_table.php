@@ -6,6 +6,9 @@
  * id(PK)	INT		: 현재는 하나의 레코드만 저장하므로 의미 없음.
  * version	VARCHAR(16)	: 시스템 버전 문자열을 가짐. 버전정보를 통해 스키마의 업그레이드 여부 판단
  * system_name	VARCHAR(40)	: 시스템 명칭
+ * attr1_enabled BOOL		: 사용자 속성1 사용여부
+ * attr2_enabled BOOL		: 사용자 속성1 사용여부
+ * attr3_enabled BOOL		: 사용자 속성1 사용여부
  *
  * @author dgkim
  */
@@ -21,13 +24,19 @@ class Setup_table extends CI_Model {
 		$this->dbforge->add_field('id INT NOT NULL AUTO_INCREMENT PRIMARY KEY');
 		$this->dbforge->add_field('version VARCHAR(16) NOT NULL');
 		$this->dbforge->add_field('system_name VARCHAR(40) NOT NULL');
+		$this->dbforge->add_field('attr1_enabled BOOL');
+		$this->dbforge->add_field('attr2_enabled BOOL');
+		$this->dbforge->add_field('attr3_enabled BOOL');
 		$this->dbforge->create_table($this->table_name, FALSE);
 	}
 
 	public function fulfill_table() {
 		$data = array(
 				'version' => '0.1',
-				'system_name' => '설문조사시스템'
+				'system_name' => '설문조사시스템',
+				'attr1_enabled' => FALSE,
+				'attr2_enabled' => FALSE,
+				'attr3_enabled' => FALSE
 			);
 
 		$query = $this->db->get('setup', 1, 0);

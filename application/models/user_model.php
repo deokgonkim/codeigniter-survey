@@ -7,18 +7,40 @@
  */
 class User_model extends CI_Model {
 
-	var $table_name = 'user';
+	protected $table_name = 'user';
+
+	protected $attr1_enabled = FALSE;
+	protected $attr2_enabled = FALSE;
+	protected $attr3_enabled = FALSE;
+
+	private $login_columns = 'id, login_name, password';
 
 	function __construct() {
 		parent::__construct();
 		$this->load->database();
+		$this->load->model('Setup_model');
+		$this->attr1_enabled = $this->Setup_model->is_attr1_enabled();
+		$this->attr2_enabled = $this->Setup_model->is_attr2_enabled();
+		$this->attr3_enabled = $this->Setup_model->is_attr3_enabled();
+
+		if ( $this->attr1_enabled ) {
+			$this->login_columns .= ', attr1';
+		}
+		if ( $this->attr2_enabled ) {
+			$this->login_columns .= ', attr2';
+		}
+		if ( $this->attr3_enabled ) {
+			$this->login_columns .= ', attr3';
+		}
 	}
 
 	function login($username, $password) {
-		foreach ($this->get_realms() as $realm) {
+		$this->logger->debug('login columns : ' . $this->login_columns);
+
+		foreach ($this->Setup_model->get_realms('User') as $realm) {
 			if ( $realm->type == 'Internal' ) {
 				log_message('error', 'Attempting Internal login process.');
-				$this->db->select('id, login_name, password');
+				$this->db->select($this->login_columns);
 				$this->db->from($this->table_name);
 				$this->db->where('login_name', $username);
 				$this->db->limit(1);
@@ -33,8 +55,6 @@ class User_model extends CI_Model {
 					throw new Exception('No such user');
 				}
 
-				$this->db->where('password', hash('sha1', $password));
-
 				break;
 			}
 			if ( $realm->type == 'LDAP' ) {
@@ -48,13 +68,5 @@ class User_model extends CI_Model {
 				break;
 			}
 		}
-	}
-
-	private function get_realms() {
-		$this->db->select('class, name, type');
-		$this->db->from('realm');
-		$this->db->where('class', 'User');
-		$query = $this->db->get();
-		return $query->result();
 	}
 }

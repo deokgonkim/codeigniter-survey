@@ -1,5 +1,8 @@
+	<h1>로그인 화면</h1>
+	<div id="body">
 	<?php echo validation_errors(); ?>
-	<?php echo form_open('login/login_check'); ?>
+	<?php //echo form_open('login/login_check'); ?>
+	<?php echo form_open('login'); ?>
 	<label for="login_name">Username:</label>
 	<input type="text" size="20" id="login_name" name="login_name"/>
 	<br/>
@@ -8,3 +11,4 @@
 	<br/>
 	<input type="submit" value="Login"/>
 	</form>
+	</div><!--/div#body -->

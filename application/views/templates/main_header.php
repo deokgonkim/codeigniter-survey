@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title> - Survey Program</title>
+	<title><?php echo $system_name; ?> (<?php echo $system_version; ?>)</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<style type="text/css">
 		#container{
