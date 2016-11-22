@@ -22,6 +22,7 @@ class Setup extends CI_Controller {
 		$this->load->model('setup/Group_member_table');
 		$this->load->model('setup/Surveys_table');
 		$this->load->model('setup/Survey_inbox_table');
+		$this->load->model('setup/Notices_table');
 	}
 
 	public function index()
@@ -123,6 +124,17 @@ class Setup extends CI_Controller {
 		}
 		$i ++;
 
+		$table_name = 'notices';
+		$data['tables'][$i]['name'] = $table_name;
+		if ( !$this->db->table_exists($table_name) ) {
+			$this->Notices_table->create_table();
+			$this->Notices_table->fulfill_table();
+			$data['tables'][$i]['status'] = 'OK';
+		} else {
+			$data['tables'][$i]['status'] = 'Already exists';
+		}
+		$i ++;
+
 //		$data['tables'][$i]['name'] = 'user';
 //		$this->User_table->create_user_table();
 //		$this->User_table->fulfill_user_table();
@@ -171,6 +183,11 @@ class Setup extends CI_Controller {
 
 		$data['tables'][$i]['name'] = 'survey_inbox';
 		$this->Survey_inbox_table->drop_table();
+		$data['tables'][$i]['status'] = 'OK';
+		$i ++;
+
+		$data['tables'][$i]['name'] = 'notices';
+		$this->Notices_table->drop_table();
 		$data['tables'][$i]['status'] = 'OK';
 		$i ++;
 

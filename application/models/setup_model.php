@@ -57,6 +57,9 @@ class Setup_model extends CI_Model {
 		return $query->result();
 	}
 
+	/**
+	 * 시스템 이름을 반환한다.
+	 */
 	public function get_system_name() {
 		$this->db->select('system_name');
 		$this->db->from($this->table_name);
@@ -65,11 +68,25 @@ class Setup_model extends CI_Model {
 		return $query->row()->system_name;
 	}
 
+	/**
+	 * 시스템 버전을 반환한다.
+	 */
 	public function get_version() {
 		$this->db->select('version');
 		$this->db->from($this->table_name);
 		$query = $this->db->get();
 		$this->logger->debug($query->row()->version);
 		return $query->row()->version;
+	}
+
+	/**
+	 * 회원 가입 허용 여부를 반환한다.
+	 */
+	public function get_allow_register() {
+		$this->db->select('allow_register');
+		$this->db->from($this->table_name);
+		$query = $this->db->get();
+		$this->logger->debug($query->row()->allow_register);
+		return $query->row()->allow_register;
 	}
 }

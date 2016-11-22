@@ -4,10 +4,14 @@
 		<div id="left_column">
 			<label>이용안내</label>
 			<table class="list">
-			<ul>
-			<?php foreach ($notices as $notice_item): ?>
-				<li><?php echo anchor('system/notice/view/'.$notice_item->id, $notice_item->title, '') ?></li>
-			<?php endforeach ?>
+			<tr>
+				<th>제목</th>
+				<th>게시일</th>
+			<tr>
+			<?php foreach ($notices as $notice_item): ?><tr>
+				<td><?php echo anchor('system/notice/view/'.$notice_item->id, $notice_item->title, '') ?></td>
+				<td><?php echo $notice_item->create_datetime; ?>
+			<?php endforeach ?></tr>
 			</ul>
 			</table>
 		</div>

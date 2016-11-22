@@ -9,7 +9,7 @@ class Home extends Base_Controller {
 
 	function __construct() {
 		parent::__construct();
-		//$this->load->model('Notice_model');
+		$this->load->model('Notice_model');
 		$this->load->model('Survey_model');
 		//$this->load->model('Survey_archive_model');
 	}
@@ -17,8 +17,7 @@ class Home extends Base_Controller {
 	public function index() {
 		$data = array();
 
-		//$data['notices'] = $this->Notice_model->get_notice_list();
-		$data['notices'] = array();
+		$data['notices'] = $this->Notice_model->get_notices(5);
 		$data['surveys_archived'] = array();
 		$uid = $this->session->userdata('uid');
 		if ( $uid ) {

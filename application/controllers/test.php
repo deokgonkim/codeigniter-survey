@@ -4,6 +4,7 @@ class Test extends Base_Controller {
 
 	function __construct() {
 		parent::__construct();
+		$this->load->model('Setup_model');
 		$this->load->model('User_model');
 		$this->load->model('Group_model');
 		$this->load->model('Survey_model');
@@ -26,6 +27,11 @@ class Test extends Base_Controller {
 	public function user_by_uid() {
 		header('Content-Type: text/html; charset=UTF-8');
 		echo print_r($this->User_model->get_user_by_uid(1), TRUE);
+	}
+
+	public function allow_register() {
+		header('Content-Type: text/html; charset=UTF-8');
+		echo 'allow_register?' . ($this->Setup_model->get_allow_register() ? 'allow' : 'deny');
 	}
 
 	public function index() {
