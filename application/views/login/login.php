@@ -11,4 +11,5 @@
 	<br/>
 	<input type="submit" value="Login"/>
 	</form>
+	<?php if ( $register ) echo anchor($register_link, '회원가입', ''); ?> | <?php echo anchor($recovery_link, '아이디/비밀번호 찾기', ''); ?>
 	</div><!--/div#body -->

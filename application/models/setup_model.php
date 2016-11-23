@@ -16,6 +16,9 @@ class Setup_model extends CI_Model {
 		$this->load->database();
 	}
 
+	/**
+	 * 사용자 속성1의 사용여부를 반환한다.
+	 */
 	public function is_attr1_enabled() {
 		$this->db->select('attr1_enabled');
 		$this->db->from($this->table_name);
@@ -24,6 +27,9 @@ class Setup_model extends CI_Model {
 		return $query->row()->attr1_enabled;
 	}
 
+	/**
+	 * 사용자 속성2의 사용여부를 반환한다.
+	 */
 	public function is_attr2_enabled() {
 		$this->db->select('attr2_enabled');
 		$this->db->from($this->table_name);
@@ -32,6 +38,9 @@ class Setup_model extends CI_Model {
 		return $query->row()->attr2_enabled;
 	}
 
+	/**
+	 * 사용자 속성3의 사용여부를 반환한다.
+	 */
 	public function is_attr3_enabled() {
 		$this->db->select('attr3_enabled');
 		$this->db->from($this->table_name);
@@ -88,5 +97,27 @@ class Setup_model extends CI_Model {
 		$query = $this->db->get();
 		$this->logger->debug($query->row()->allow_register);
 		return $query->row()->allow_register;
+	}
+
+	/**
+	 * 회원 가입 페이지에 대한 링크를 반환한다.
+	 */
+	public function get_register_link() {
+		$this->db->select('register_link');
+		$this->db->from($this->table_name);
+		$query = $this->db->get();
+		$this->logger->debug($query->row()->register_link);
+		return $query->row()->register_link;
+	}
+
+	/**
+	 * 아이디/비밀번호 찾기 페이지에 대한 링크를 반환한다.
+	 */
+	public function get_recovery_link() {
+		$this->db->select('recovery_link');
+		$this->db->from($this->table_name);
+		$query = $this->db->get();
+		$this->logger->debug($query->row()->recovery_link);
+		return $query->row()->recovery_link;
 	}
 }

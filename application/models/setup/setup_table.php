@@ -8,7 +8,7 @@
  * system_name	VARCHAR(40)	: 시스템 명칭
  * allow_register BOOL		: 회원 가입 허용여부
  * register_link VARCHAR(256)	: 회원 가입 링크
- * selfserv_link VARCHAR(256)	: 아이디/비밀번호 찾기 링크
+ * recovery_link VARCHAR(256)	: 아이디/비밀번호 찾기 링크
  * attr1_enabled BOOL		: 사용자 속성1 사용여부
  * attr2_enabled BOOL		: 사용자 속성1 사용여부
  * attr3_enabled BOOL		: 사용자 속성1 사용여부
@@ -29,7 +29,7 @@ class Setup_table extends CI_Model {
 		$this->dbforge->add_field('system_name VARCHAR(40) NOT NULL');
 		$this->dbforge->add_field('allow_register BOOL NOT NULL DEFAULT TRUE');
 		$this->dbforge->add_field('register_link VARCHAR(256)');
-		$this->dbforge->add_field('selvserv_link VARCHAR(256)');
+		$this->dbforge->add_field('recovery_link VARCHAR(256)');
 		$this->dbforge->add_field('attr1_enabled BOOL');
 		$this->dbforge->add_field('attr2_enabled BOOL');
 		$this->dbforge->add_field('attr3_enabled BOOL');

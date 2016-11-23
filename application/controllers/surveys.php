@@ -5,7 +5,7 @@
  * 
  * @author dgkim
  */
-class Surveys extends CI_Controller {
+class Surveys extends Subpage_Controller {
 
 	function __construct() {
 		parent::__construct();
@@ -17,9 +17,9 @@ class Surveys extends CI_Controller {
 	 */
 	public function index() {
 		$data['surveys'] = $this->Survey_model->get_surveys();
-		$this->load->view('templates/header', $data);
+		$this->load->view('templates/main_header', $data);
 		$this->load->view('surveys/index', $data);
-		$this->load->view('templates/footer', $data);
+		$this->load->view('templates/main_footer', $data);
 	}
 
 	/*

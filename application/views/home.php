@@ -9,7 +9,7 @@
 				<th>게시일</th>
 			<tr>
 			<?php foreach ($notices as $notice_item): ?><tr>
-				<td><?php echo anchor('system/notice/view/'.$notice_item->id, $notice_item->title, '') ?></td>
+				<td><?php echo anchor('preference/notice_view/'.$notice_item->id, $notice_item->title, '') ?></td>
 				<td><?php echo $notice_item->create_datetime; ?>
 			<?php endforeach ?></tr>
 			</ul>

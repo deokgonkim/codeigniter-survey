@@ -14,13 +14,13 @@ class Base_Controller extends CI_Controller {
 	
 	function __construct() {
 		parent::__construct();
-		$this->load->model('Setup_model');
-		$this->load->model('User_model');
 		$this->load->helper('url');
 		if ( ! $this->_is_database_ready() ) {
 			redirect('setup');
 			return;
 		}
+		$this->load->model('Setup_model');
+		$this->load->model('User_model');
 		// 시스템 정보 가져오기 BEGIN
 		$data['system_name'] = $this->Setup_model->get_system_name();
 		$data['system_version'] = $this->Setup_model->get_version();
@@ -39,13 +39,13 @@ class Base_Controller extends CI_Controller {
 
 		// 메인메뉴 BEGIN
 		$data['main_menus']['home'] = '시작하기';
-		$data['main_menus']['survey'] = '설문조사';
+		$data['main_menus']['surveys'] = '설문조사';
 		if ( $this->session->userdata('admin') || $this->session->userdata('create') || $this->session->userdata('modify') ) {
-			$data['main_menus']['survey_manage'] = '설문조사 관리';
+			$data['main_menus']['surveys_manage'] = '설문조사 관리';
 		}
 		$data['main_menus']['preference'] = '환경설정';
 		
-		if ( $this->session->userdata('admin') || $this->session->userdata('create') || $this->session->userdata('modify') ) {
+		if ( $this->session->userdata('admin') ) {
 			$data['main_menus']['system_manage'] = '시스템 관리';
 		}
 		// 메인메뉴 END
@@ -55,9 +55,6 @@ class Base_Controller extends CI_Controller {
 
 	public function _is_database_ready() {
 		if ( ! $this->db->table_exists('setup') ) {
-			return FALSE;
-		}
-		if ( ! $this->Setup_model->get_version() ) {
 			return FALSE;
 		}
 		return TRUE;
@@ -71,6 +68,30 @@ class Subpage_Controller extends Base_Controller {
 	
 	function __construct() {
 		parent::__construct();
+
+		$main_url = $this->router->fetch_class();
+
+		$data['sub_menus'] = array();
+
+		switch ($main_url) {
+		case 'surveys':
+			$data['sub_menus'] = array(
+				'surveys/' => '받은 설문지',
+				'surveys/archive' => '지난 설문지'
+			);
+			break;
+		case 'surveys_manage':
+			$data['sub_menus'] = array(
+			);
+			break;
+		case 'preference':
+			$data['sub_menus'] = array(
+				'preference' => '개인정보 수정',
+				'preference/password_change' => '비밀번호 변경',
+				'preference/notices' => '이용안내'
+			);
+			break;
+		}
 
 		$this->load->vars($data);
 	}

@@ -33,4 +33,24 @@
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 </head>
 <body>
+<h1><?php echo $system_name; ?></h1>
+<?php if ( $logged_in ) { ?>
+<p><?php echo $name; ?>님 환영합니다. <?php echo anchor('login/logout', '로그아웃', ''); ?></p>
+<?php } else { ?>
+<p><?php echo anchor('login/', '로그인', ''); ?></p>
+<?php } ?>
+<div id="menubar">
+	<ul>
+		<?php foreach ($main_menus as $menu_key => $menu_name): ?><li>
+			<?php echo anchor($menu_key, $menu_name, '') ?>
+		</li><?php endforeach ?>
+	</ul>
+</div>
 <div id="container">
+	<div id="left_pane">
+		<ul>
+			<?php foreach ($sub_menus as $menu_key => $menu_name): ?><li>
+				<?php echo anchor($menu_key, $menu_name, '') ?>
+			</li><?php endforeach ?>
+		</ul>
+	</div><!--/div#left_pane-->

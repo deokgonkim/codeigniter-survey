@@ -77,4 +77,41 @@ class User_model extends CI_Model {
 		$query = $this->db->get();
 		return $query->row();
 	}
+
+	public function get_user_by_login($login) {
+		$this->db->select('id, login_name, name, email, attr1, attr2, attr3');
+		$this->db->from($this->table_name);
+		$this->db->where('login_name', $login);
+		$query = $this->db->get();
+		return $query->row();
+	}
+
+	public function get_user_by_mail($mail) {
+		$this->db->select('id, login_name, name, email, attr1, attr2, attr3');
+		$this->db->from($this->table_name);
+		$this->db->where('email', $mail);
+		$query = $this->db->get();
+		return $query->row();
+	}
+	
+	/**
+	 * 회원 가입 처리
+	 */
+	public function create($login, $password, $name, $mail) {
+		if ( ! $this->Setup_model->get_allow_register() ) {
+			throw new Exception('Not allow register');
+		}
+
+		if ( $this->get_user_by_login($login) ) {
+			throw new Exception('Already existing login');
+		}
+		$password_hashed = hash('sha1', $password);
+		$data = array(
+			'login_name' => $login,
+			'name' => $name,
+			'password' => $password_hashed,
+			'email' => $mail
+		);
+		$this->db->insert($this->table_name, $data);
+	}
 }

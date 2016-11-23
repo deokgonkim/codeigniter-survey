@@ -11,12 +11,12 @@
  * modify_datetime DATETIME	: 이용안내 수정일시
  * writer	VARCHAR(20)	: 이용안내 게시자 (보이는 이름)
  * content	TEXT		: 이용안내 내용
- * attachment1_name VARCHAR(256) : 이용안내 첨부파일1 파일명
- * attachment2_name VARCHAR(256) : 이용안내 첨부파일2 파일명
- * attachment3_name VARCHAR(256) : 이용안내 첨부파일3 파일명
- * attachment1	LONGBLOB	: 이용안내 첨부파일1 ( max 4GB )
- * attachment2	LONGBLOB	: 이용안내 첨부파일2 ( max 4GB )
- * attachment3	LONGBLOB	: 이용안내 첨부파일3 ( max 4GB )
+ * attach1_name VARCHAR(256)	: 이용안내 첨부파일1 파일명
+ * attach2_name VARCHAR(256)	: 이용안내 첨부파일2 파일명
+ * attach3_name VARCHAR(256)	: 이용안내 첨부파일3 파일명
+ * attach1_path	VARCHAR(256)	: 이용안내 첨부파일1 ( max 4GB )
+ * attach2_path	VARCHAR(256)	: 이용안내 첨부파일2 ( max 4GB )
+ * attach3_path	VARCHAR(256)	: 이용안내 첨부파일3 ( max 4GB )
  * status	INT		: 이용안내 상태 (게시0, 보류1, 삭제3)
  *
  * @author dgkim
@@ -39,12 +39,12 @@ class Notices_table extends CI_Model {
 		$this->dbforge->add_field('modify_datetime DATETIME');
 		$this->dbforge->add_field('writer VARCHAR(20)');
 		$this->dbforge->add_field('content TEXT');
-		$this->dbforge->add_field('attachment1_name VARCHAR(256)');
-		$this->dbforge->add_field('attachment2_name VARCHAR(256)');
-		$this->dbforge->add_field('attachment3_name VARCHAR(256)');
-		$this->dbforge->add_field('attachment1 LONGBLOB');
-		$this->dbforge->add_field('attachment2 LONGBLOB');
-		$this->dbforge->add_field('attachment3 LONGBLOB');
+		$this->dbforge->add_field('attach1_name VARCHAR(256)');
+		$this->dbforge->add_field('attach2_name VARCHAR(256)');
+		$this->dbforge->add_field('attach3_name VARCHAR(256)');
+		$this->dbforge->add_field('attach1_path VARCHAR(256)');
+		$this->dbforge->add_field('attach2_path VARCHAR(256)');
+		$this->dbforge->add_field('attach3_path VARCHAR(256)');
 		$this->dbforge->add_field('status INT DEFAULT 0');
 
 		$this->dbforge->create_table($this->table_name, FALSE);
