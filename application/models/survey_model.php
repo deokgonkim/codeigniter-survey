@@ -11,19 +11,33 @@ class Survey_model extends CI_Model {
 
 	function __construct() {
 		parent::__construct();
-		$this->load->database();
+		$this->load->helper('date');
 	}
 
 	/**
 	 * 전체 설문조사 목록을 반환한다.
 	 */
-	public function get_surveys() {
+	public function get_surveys($count = 20) {
+		$this->db->select('surveys.id, title, name as creator_name, notbefore, notafter, content');
+		$this->db->from($this->table_name);
+		$this->db->join('user', 'surveys.creator = user.id');
+		//$this->db->where('login_name', $username);
+		$this->db->limit($count);
+		$this->db->order_by('create_datetime', 'desc');
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	/**
+	 * 설문조사 작성자의 설문 목록을 반환한다.
+	 */
+	public function get_surveys_by_owner($uid = 0, $count = 20) {
 		$this->db->select('id, title');
 		$this->db->from($this->table_name);
-		//$this->db->where('login_name', $username);
-		//$this->db->limit(1);
+		$this->db->where('creator', $uid);
+		$this->db->limit($count);
 		$query = $this->db->get();
-		return $query->result_array();
+		return $query->result();
 	}
 
 	/**
@@ -55,5 +69,16 @@ class Survey_model extends CI_Model {
 		}
 		$query = $this->db->get();
 		return $query->result();
+	}
+
+	public function create($data) {
+		if ( ! $data ) {
+			throw new Exception('No data provided');
+		}
+		$data['creator'] = $this->session->userdata('uid');
+		$data['create_datetime'] = date_create()->format('Y-m-d H:i:s');
+		$data['notbefore'] = date('Y/m/d', strtotime($data['notbefore']));
+		$data['notafter'] = date('Y/m/d', strtotime($data['notafter']));
+		$this->db->insert($this->table_name, $data);
 	}
 }

@@ -82,6 +82,8 @@ class Subpage_Controller extends Base_Controller {
 			break;
 		case 'surveys_manage':
 			$data['sub_menus'] = array(
+				'surveys_manage' => '설문조사 목록',
+				'surveys_manage/create' => '설문조사 작성'
 			);
 			break;
 		case 'preference':
