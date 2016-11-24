@@ -15,6 +15,10 @@ class Surveys_manage extends Subpage_Controller {
 	}
 
 	/**
+	 * 설문조사 관리 > 설문조사 목록
+	 *
+	 * 본인이 실시한 설문조사 목록이 보여진다.
+	 *
 	 */
 	public function index() {
 		$data = array();
@@ -28,9 +32,12 @@ class Surveys_manage extends Subpage_Controller {
 		$this->load->view('templates/main_footer', $data);
 	}
 
+	/**
+	 * 설문조사 관리 > 설문조사 작성
+	 */
 	public function create() {
 
-		$data['title'] = 'Create a survey item';
+		$data = array();
 
 		$this->form_validation->set_rules('title', '설문제목', 'required');
 		$this->form_validation->set_rules('surveyor_name', '조사기관', 'required');
@@ -42,8 +49,8 @@ class Surveys_manage extends Subpage_Controller {
 
 		if ($this->form_validation->run() === FALSE) {
 			$this->load->view('templates/main_header', $data);
-			$this->load->view('surveys_manage/create_form');
-			$this->load->view('templates/main_footer');
+			$this->load->view('surveys_manage/create_form', $data);
+			$this->load->view('templates/main_footer', $data);
 		} else {
 			$data = array(
 				'title' => $this->input->post('title'),
@@ -53,15 +60,21 @@ class Surveys_manage extends Subpage_Controller {
 				'notbefore' => $this->input->post('notbefore'),
 				'notafter' => $this->input->post('notafter')
 			);
-			$this->Survey_model->create($data);
+			$survey_id = $this->Survey_model->create($data);
+			$this->logger->debug('survey created : ' . $survey_id);
 			redirect('surveys_manage/add_items/' . $survey_id, 'refresh');
 		}
 	}
 
+	/**
+	 * 설문조사 관리 > 설문조사 작성 > (설문 문항 작성 화면)
+	 */
 	public function add_items($survey_id = 0) {
+		$data = array();
+		$data['survey'] = $this->Survey_model->get_survey($survey_id);
 		$this->load->view('templates/main_header', $data);
-		$this->load->view('surveys_manage/create_form');
-		$this->load->view('templates/main_footer');
+		$this->load->view('surveys_manage/add_items', $data);
+		$this->load->view('templates/main_footer', $data);
 	}
 
 	public function date_valid($date) {

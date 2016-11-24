@@ -32,7 +32,7 @@ class Survey_model extends CI_Model {
 	 * 설문조사 작성자의 설문 목록을 반환한다.
 	 */
 	public function get_surveys_by_owner($uid = 0, $count = 20) {
-		$this->db->select('id, title');
+		$this->db->select('surveys.id, title, notbefore, notafter, surveyor_name, surveyor_mail, surveyor_phone, surveys.status, content');
 		$this->db->from($this->table_name);
 		$this->db->where('creator', $uid);
 		$this->db->limit($count);
@@ -44,12 +44,12 @@ class Survey_model extends CI_Model {
 	 * 설문조사 ID를 통해 설문조사를 반환한다.
 	 */
 	public function get_survey($survey_id) {
-		$this->db->select('id, title');
+		$this->db->select('surveys.id, title, notbefore, notafter, surveyor_name, surveyor_mail, surveyor_phone, surveys.status, content');
 		$this->db->from($this->table_name);
 		$this->db->where('id', $survey_id);
 		//$this->db->limit(1);
 		$query = $this->db->get();
-		return $query->row_array();
+		return $query->row();
 	}
 
 	/**
@@ -80,5 +80,7 @@ class Survey_model extends CI_Model {
 		$data['notbefore'] = date('Y/m/d', strtotime($data['notbefore']));
 		$data['notafter'] = date('Y/m/d', strtotime($data['notafter']));
 		$this->db->insert($this->table_name, $data);
+		$insert_id = $this->db->insert_id();
+		return $insert_id;
 	}
 }
