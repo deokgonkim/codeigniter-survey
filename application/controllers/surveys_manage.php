@@ -77,6 +77,12 @@ class Surveys_manage extends Subpage_Controller {
 		$this->load->view('templates/main_footer', $data);
 	}
 
+	public function save_item($survey_id = 0, $item_id = 0) {
+		$this->logger->debug('survey_id : ' . $this->input->post('survey_id'));
+		$this->logger->debug('item_id : ' . $this->input->post('item_id'));
+		$this->logger->debug('val1 : ' . $this->input->post('val1'));
+	}
+
 	public function date_valid($date) {
 		$parts = explode("/", $date);
 		if (count($parts) == 3) {

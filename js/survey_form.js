@@ -16,6 +16,10 @@ function Survey_form(survey_id) {
 	this.questions = [];
 }
 
+Survey_form.prototype.set_url_save_item = function(url_save_item) {
+	this.url_save_item = url_save_item;
+}
+
 /**
  * 화면에 표시되는 엘리면트를 jQuery로 잡아 넣는다.
  *
@@ -205,4 +209,16 @@ Survey_form.prototype._save_item = function(question) {
 	console.log('question id is ' + question_id);
 	console.log('title ' + question_title);
 	console.log('ans ' + answers);
+	$.ajaxo
+	$.ajax({  
+		type: 'POST',  
+		url: this.url_save_item,  
+		data: {
+			"survey_id": this.survey_id,
+			"item_id": question_id
+		},  
+		success: function(data, status) {
+			console.log(data);
+		}
+	});  
 }

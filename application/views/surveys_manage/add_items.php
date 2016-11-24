@@ -61,11 +61,13 @@
 	</form>
 	<script type="text/javascript">
 	var survey_id = '<?php echo $survey->id; ?>';
+	var url_item_save = '<?php echo site_url('surveys_manage/save_item'); ?>';
 	$(function() {
 		// hide template
 		$('#question_template').css('display', 'none');
 		// create first item.
 		window.frm = new Survey_form(survey_id);
+		frm.set_url_save_item(url_item_save);
 		frm.set_form($('#items'));
 		frm.set_template($('#question_template'));
 		frm.set_class10template($('[class=class_10]'));
