@@ -9,14 +9,8 @@
  *             "title": 'title',
  *             "class": 'class',
  *             "answers": [
- *                 {
- *                 	"val_id": 'val_id',
- *                 	"val_text": 'val_text'
- *                 },
- *                 {
- *                 	"val_id": 'val_id',
- *                 	"val_text": 'val_text'
- *                 }
+ *                 // server side { "1": 'val1', "2": 'val2' }
+ *                 "val1", 'val2'
  *             ]
  *         },
  *         // Survey_item
@@ -25,14 +19,8 @@
  *             "title": 'title',
  *             "class": 'class',
  *             "answers": [
- *                 {
- *                 	"val_id": 'val_id',
- *                 	"val_text": 'val_text'
- *                 },
- *                 {
- *                 	"val_id": 'val_id',
- *                 	"val_text": 'val_text'
- *                 }
+ *                 // server side { "1": 'val1', "2": 'val2' }
+ *                 "val1", 'val2'
  *             ]
  *         }
  *     ]
@@ -99,9 +87,9 @@ Survey_manage_form.prototype.set_form = function(items_form) {
  * <div id="question_template">
  *     <button>문항 저장</button>
  *     <label for="question">설문 n</label>
- *     <input type="text" name="question" />
+ *     <input type="text" name="question" placeholder="문항" />
  *     <select name="item_class">
- *         <option>--문항 유형 선택--</option>
+ *         <option value="0">--문항 유형 선택--</option>
  *         <option value="10">다항선택형</option>
  *         <option value="20">서열형</option>
  *         <option value="30">개방형</option>
@@ -117,34 +105,33 @@ Survey_manage_form.prototype.set_template = function(template) {
 		var question = $(this).parents('[id^=question]');
 		frmObj._save_item(question);
 	});
+	// 문항 종류 선택 실렉트 박스
 	this.dom_template.children('select[name=item_class]').change(function(e) {
 		var dom_item = $(this).parent('[id^=question]');
 		var item_id = dom_item.attr('id').replace('question', '');
-		console.log('item_id : ' + item_id);
-		console.log('frmObj.answers : ' + frmObj.questions[item_id-1].answers);
 		var question = frmObj.questions[item_id-1];
-		var answers = question.answers;
 		question.clazz = $(this).val();
 		question.rendered = 'dirty';
 		if ( question.clazz == '10' ) {
 			question.clazz = '10';
-			if ( answers.length == 0 ) {
-				answers.push('');
+			if ( question.answers.length == 0 ) {
+				question.answers.push('');
 			}
 		} else if ( question.clazz == '20' ) {
-			if ( answers.length == 0 ) {
-				answers.push('aa');
+			if ( question.answers.length == 0 ) {
+				question.answers.push('');
 			}
 		} else {
 		}
 		frmObj.render();
 	});
-}
-
-Survey_manage_form.prototype.new_item = function() {
-	var item = new Survey_item();
-	this.questions.push(item);
-	this.render(this.dom_form);
+	// 문항 제목
+	this.dom_template.children('input[type=text]').change(function(e) {
+		var dom_item = $(this).parent('[id^=question]');
+		var item_id = dom_item.attr('id').replace('question', '');
+		var question = frmObj.questions[item_id-1];
+		question.title = $(this).val();
+	});
 }
 
 /**
@@ -153,7 +140,7 @@ Survey_manage_form.prototype.new_item = function() {
  * 답변 템플릿
  * <div class="class_10">
  *     <ol>
- *         <li><input type="radio" name="ans" /><input type="text" name="ans" value="응답1" /><button>삭제</button></li>
+ *         <li><input type="radio" name="ans" /><input type="text" name="ans" placeholder="응답1" /><button>삭제</button></li>
  *     </ol>
  *     <button>항목추가</button>
  * </div>
@@ -162,6 +149,7 @@ Survey_manage_form.prototype.new_item = function() {
 Survey_manage_form.prototype.set_class10template = function(template) {
 	this.dom_class10template = template;
 	this.dom_class10template.css('display', 'none');
+	this.dom_class10template.find('li').first().attr('data-is-template', 'true');
 	var frmObj = this;
 	// 응답 항목 추가 버튼 액션
 	this.dom_class10template.children('button').click(function(e) {
@@ -174,18 +162,15 @@ Survey_manage_form.prototype.set_class10template = function(template) {
 		var question = $(this).parents('[id^=question]');
 		var item_id = question.attr('id').replace('question', '');
 		var ans_idx = $(this).parent('li').attr('data-index');
-		console.log('delete button');
 		frmObj.remove_answer_for_item(item_id, ans_idx);
 	});
 	// 내용 수정시 자동 갱신
-	//TODO blur 이벤트에 하는 것이 맞을까?
-	this.dom_class10template.find('li input[type=text]').blur(function(e) {
+	this.dom_class10template.find('li input[type=text]').change(function(e) {
 		var question = $(this).parents('[id^=question]');
 		var item_id = question.attr('id').replace('question', '');
 		var ans_idx = $(this).parent('li').attr('data-index');
 		frmObj.replace_answer_for_item(item_id, ans_idx, $(this).val());
 	});
-	this.dom_class10template.find('li').first().attr('data-is-template', 'true');
 }
 
 /**
@@ -194,7 +179,7 @@ Survey_manage_form.prototype.set_class10template = function(template) {
  * 답변 템플릿
  * <div class="class_20">
  *     <ul>
- *         <li><input type="checkbox" /><input type="text" name="ans" value="응답1" /><button>삭제</button></li>
+ *         <li><input type="checkbox" /><input type="text" name="ans" placeholder="응답1" /><button>삭제</button></li>
  *     </ul>
  *     <button>항목추가</button>
  *     선택 제한<input type="number" name="selectable" />
@@ -203,33 +188,41 @@ Survey_manage_form.prototype.set_class10template = function(template) {
 Survey_manage_form.prototype.set_class20template = function(template) {
 	this.dom_class20template = template;
 	this.dom_class20template.css('display', 'none');
+	this.dom_class20template.find('li').first().attr('data-is-template', 'true');
+	var frmObj = this;
+	// 응답 항목 추가 버튼 액션
 	this.dom_class20template.children('button').click(function(e) {
 		var question = $(this).parents('[id^=question]');
-		var ansItem = question.find('li:visible').first().clone(true, true);
-		ansItem.children('input[type=text]').val('');
-		question.find('ul').append(ansItem);
+		var item_id = question.attr('id').replace('question', '');
+		frmObj.add_answer_for_item(item_id);
 		$(this).parent().children('input[type=number]').val(question.find('li:visible').length);
 	});
 	// 응답 항목 삭제 버튼 액션
 	this.dom_class20template.find('li button').click(function(e) {
-		// 마지막 남은 1개는 삭제되지 않도록 한다.
-		if ( $(this).parents('li').parent().children().length == 1 ) {
-			return;
-		}
+		var question = $(this).parents('[id^=question]');
+		var item_id = question.attr('id').replace('question', '');
+		var ans_idx = $(this).parent('li').attr('data-index');
+		frmObj.remove_answer_for_item(item_id, ans_idx);
 		var counter = $(this).parents('ul').parent().children('input[type=number]');
 		counter.val(counter.val()-1);
-		$(this).parents('li').remove();
 	});
+	// 내용 수정시 자동 갱신
+	this.dom_class20template.find('li input[type=text]').change(function(e) {
+		var question = $(this).parents('[id^=question]');
+		var item_id = question.attr('id').replace('question', '');
+		var ans_idx = $(this).parent('li').attr('data-index');
+		frmObj.replace_answer_for_item(item_id, ans_idx, $(this).val());
+	});
+	// 서열 선택 가능 항목수
 	this.dom_class20template.children('input[type=number]').change(function(e) {
 		var itemCount = $(this).parent().find('li:visible').length;
-		if ( this.value < itemCount ) {
+		if ( this.value < 1 ) {
 			this.value = 1;
 		}
 		if ( this.value > itemCount ) {
 			this.value = itemCount;
 		}
 	});
-	this.dom_class20template.find('li').first().attr('data-is-template', 'true');
 }
 
 /**
@@ -250,75 +243,13 @@ Survey_manage_form.prototype.set_class30template = function(template) {
 Survey_manage_form.prototype.add_item = function(data) {
 	var question;
 	if ( data == undefined ) {
-		question = new Survey_item(this.questions.length + 1, 'not yet', 10, undefined);
+		question = new Survey_item(this.questions.length + 1, '', 0, undefined);
 	} else {
 		question = new Survey_item(data.item_id, data.title, data.class, data.answer);
 	}
 	this.questions.push(question);
-	console.log('item count : ' + this.questions.length);
 	this.render();
 	return;
-
-	var item_id = this.questions.length + 1;
-	var new_item = this.dom_template.clone(true, true);
-	var frmObj = this;
-	new_item.attr('id', 'question' + item_id);
-	new_item.css('display', 'block');
-	// 문항 번호 세팅
-	new_item.children('label').text('설문 ' + item_id);
-	// 문항 제목 세팅
-	new_item.children('input').attr('name', 'title');
-	// 답변 숨기기
-	//new_item.children('div[class^=class_]').css('display', 'none');
-	// 다항식 답변 항목 추가
-	var newAns = frmObj.dom_class10template.clone(true, true);
-	new_item.append(newAns);
-	// 서열형 답변 항목 추가
-	newAns = frmObj.dom_class20template.clone(true, true);
-	new_item.append(newAns);
-	// 개방형 답변 항목 추가
-	newAns = frmObj.dom_class30template.clone(true, true);
-	new_item.append(newAns);
-	// 문항종류 선택시 처리
-	new_item.children('select[name=item_class]').change(function() {
-		var item = $(this).parent('[id^=question]');
-		//TODO html에 data-class 속성을 넣는 것이 문제 없을까? html5에서 사용하는 기능인데..
-		item.attr('data-class', this.value);
-		if ( this.value == '10' ) {
-			$(this).parent().children('div.class_10').css('display', 'block');
-			$(this).parent().children('div.class_20').css('display', 'none');
-			$(this).parent().children('div.class_30').css('display', 'none');
-			console.log($(this));
-		} else if ( this.value == '20' ) {
-			$(this).parent().children('div.class_10').css('display', 'none');
-			$(this).parent().children('div.class_20').css('display', 'block');
-			$(this).parent().children('div.class_30').css('display', 'none');
-			console.log($(this));
-		} else if ( this.value == '30' ) {
-			$(this).parent().children('div.class_10').css('display', 'none');
-			$(this).parent().children('div.class_20').css('display', 'none');
-			$(this).parent().children('div.class_30').css('display', 'block');
-			console.log($(this));
-		} else {
-			$(this).parent().children('div.class_10').css('display', 'none');
-			$(this).parent().children('div.class_20').css('display', 'none');
-			$(this).parent().children('div.class_30').css('display', 'none');
-			console.log($(this));
-		}
-	});
-	// input 항목에 blur 사용하면, 답변 항목들을 처리할 수 없다.
-	//new_item.children('input[name^=item]').blur(this._save_item);
-
-	this.questions.push(new_item);
-	if ( data != undefined ) {
-		new_item.children('input').val(data.title);
-		console.log(data.class);
-		new_item.children('select').val(data.class);
-		$.map(data.answer, function(value, index) {
-			Survey_manage_form.prototype.add_class10_answer(this, new_item, value);
-		});
-	}
-	this.dom_form.append(new_item);
 }
 
 Survey_manage_form.prototype.add_answer_for_item = function(item_id) {
@@ -329,7 +260,7 @@ Survey_manage_form.prototype.add_answer_for_item = function(item_id) {
 		alert('답항수 제한 초과(7)');
 		return;
 	}
-	question.answers.push('new answer');
+	question.answers.push('');
 	question.rendered = 'dirty';
 	this.render();
 }
@@ -425,28 +356,16 @@ Survey_manage_form.prototype.submit = function() {
 Survey_manage_form.prototype._save_item = function(question) {
 	var question_id = question.attr('id');
 	question_id = question_id.replace('question', '');
-	var question_title = question.children('input[name=title]').val();
-	var question_class = question.children('select').val();
-	//var answers = {};
-	var answers = [];
-	var answer_count = question.find('li input[type=text]:visible').length;
-	question.find('li input[type=text]:visible').each(function(index, obj) {
-		//eval('answers.ans' + index + ' = \'' + $(obj).val() + '\''); 
-		answers.push($(obj).val());
-	});
-	//var class20count = question.find('
-	console.log('question id is ' + question_id);
-	console.log('title ' + question_title);
-	console.log('ans ' + answers);
+	var question = this.questions[question_id-1];
 	$.ajax({  
 		type: 'POST',  
 		url: this.url_save_item,  
 		data: {
 			"survey_id": this.survey_id,
-			"item_id": question_id,
-			"title": question_title,
-			"class": question_class,
-			"values": answers
+			"item_id": question.item_id,
+			"title": question.title,
+			"class": question.clazz,
+			"values": question.answers
 		},  
 		success: function(data, status) {
 			console.log(data);
@@ -470,58 +389,6 @@ Survey_manage_form.prototype.get_items = function() {
 	});  
 }
 
-Survey_manage_form.prototype.changeClass = function(obj, dom_obj, data) {
-	var item = dom_obj.parents('[id^=question]');
-	//TODO html에 data-class 속성을 넣는 것이 문제 없을까? html5에서 사용하는 기능인데..
-	item.attr('data-class', this.value);
-	if ( dom_obj.value == '10' ) {
-		$(this).parent().children('div.class_10').css('display', 'block');
-		$(this).parent().children('div.class_20').css('display', 'none');
-		$(this).parent().children('div.class_30').css('display', 'none');
-		console.log($(this));
-	} else if ( dom_obj.value == '20' ) {
-		$(this).parent().children('div.class_10').css('display', 'none');
-		$(this).parent().children('div.class_20').css('display', 'block');
-		$(this).parent().children('div.class_30').css('display', 'none');
-		console.log($(this));
-	} else if ( dom_obj.value == '30' ) {
-		$(this).parent().children('div.class_10').css('display', 'none');
-		$(this).parent().children('div.class_20').css('display', 'none');
-		$(this).parent().children('div.class_30').css('display', 'block');
-		console.log($(this));
-	} else {
-		$(this).parent().children('div.class_10').css('display', 'none');
-		$(this).parent().children('div.class_20').css('display', 'none');
-		$(this).parent().children('div.class_30').css('display', 'none');
-		console.log($(this));
-	}
-}
-
-/**
- * 다항 선택형 문항 추가
- */
-Survey_manage_form.prototype.add_class10_answer = function(obj, domObj, data) {
-	//var question = domObj.parents('[id^=question]');
-	var question = domObj;
-	var existingAnswers = question.find('li:visible').length;
-	if ( existingAnswers >= 7 ) {
-		alert('답항수 제한 초과(7)');
-		return;
-	}
-	if ( existingAnswers == 0 ) {
-		question.find('div').css('display', 'block');
-	}
-	var ansItem = question.find('li:visible').first().clone(true, true);
-	ansItem.children('input[type=text]').val('');
-	question.find('ol').append(ansItem);
-	if ( question.find('div:visible').length == 0 ) {
-		question.find('div').css('display', 'block');
-	}
-	if ( data != undefined ) {
-		ansItem.children('input[type=text]').val(data.val_text);
-	}
-}
-
 Survey_manage_form.prototype.render = function(dom) {
 	var t = this;
 	//t.dom_form.children().remove();
@@ -541,6 +408,8 @@ Survey_manage_form.prototype.render = function(dom) {
 		// 문항 제목
 		dom_item.children('input').attr('name', 'title');
 		dom_item.children('input').val(obj_item.title);
+		// 문항 종류
+		dom_item.children('select[name=item_class]').val(obj_item.clazz);
 
 		if ( obj_item.clazz == '10' ) {
 			var ans = t.dom_class10template.clone(true, true);
@@ -572,11 +441,14 @@ Survey_manage_form.prototype.render = function(dom) {
 				ans.css('display', 'block');
 				dom_item.append(ans);
 			}
+		} else if ( obj_item.clazz == '30' ) {
+			var ans = t.dom_class30template.clone(true, true);
+			ans.css('display', 'block');
+			dom_item.append(ans);
 		}
 		if ( obj_item.rendered == 'dirty' ) {
 			// 객체 수정의 경우, 갱신한다.
-			t.dom_form.find('[id=question' + obj_item.item_id + ']').remove();
-			t.dom_form.append(dom_item);
+			t.dom_form.find('[id=question' + obj_item.item_id + ']').replaceWith(dom_item);
 		} else {
 			t.dom_form.append(dom_item);
 			obj_item.rendered = true;
@@ -600,14 +472,7 @@ Survey_manage_form.prototype.rerender = function(dom) {
  *     "title": 'title',
  *     "class": 'class',
  *     "answers": [
- *         {
- *             "val_id": 'val_id',
- *             "val_text": 'val_text'
- *         },
- *         {
- *             "val_id": 'val_id',
- *             "val_text": 'val_text'
- *         }
+ *             "val1", 'val2'
  *     ]
  * }
  */
@@ -615,16 +480,17 @@ function Survey_item(item_id, title, clazz, answers) {
 	this.item_id = item_id;
 	this.title = title;
 	this.clazz = clazz;
-	//this.answers = answers;
-	this.answers = [];
 
-	if ( answers == undefined ) {
-		answers = [];
-	} else {
+	if ( answers != undefined && answers.length == undefined ) {
 		var t = this;
+		this.answers = [];
 		$.map(answers, function(value, index) {
 			t.answers.push(value);
 		});
+	} else if ( answers == undefined ) {
+		this.answers = [];
+	} else {
+		this.answers = answers;
 	}
 }
 
@@ -654,10 +520,6 @@ Survey_item.prototype.get = function(attr_name) {
 	}
 }
 
-Survey_item.prototype.add_answer = function(val_id, val_text) {
-	answers.push({"val_id": val_id, "val_text": val_text});
-}
-
 /**
  * 응답 항목들을 data로 덮어 씌운다.
  *
@@ -681,40 +543,5 @@ Survey_item.prototype.set_answers = function(clazz, data) {
 		var dom = dom_ans_template.clone(true, true);
 		t.dom_answers.append(dom);
 	});
-}
-
-Survey_item.prototype.add_item = function(clazz, item) {
-	var dom_ans_template = null;
-//	if ( );
-}
-
-
-Survey_item.prototype.create_item = function(clazz, data) {
-	var new_item = null;
-	if ( clazz == 10 ) {
-		
-	}
-	if ( data == undefined ) {
-	} else {
-	}
-}
-
-Survey_item.prototype.set_dom = function(dom) {
-	this.dom_item = dom;
-}
-
-//Survey_item.prototype.add_class10item = function(
-
-Survey_item.prototype.create_answer = function(data) {
-	var new_item = null;
-
-	return new_item;
-}
-
-function Survey_item_answer(val_id, val_text, clazz) {
-	this.val_id = val_id;
-	this.val_text = val_text;
-
-	this.dom_ans = null;
 }
 

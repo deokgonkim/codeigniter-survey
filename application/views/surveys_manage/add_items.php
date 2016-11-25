@@ -21,9 +21,9 @@
 		<div id="question_template" style="display: block;">
 			<button>문항 저장</button>
 			<label for="question">설문 n</label>
-			<input type="text" name="item_question" /><!-- 제목 -->
+			<input type="text" name="item_question" placeholder="문항"/><!-- 제목 -->
 			<select name="item_class">
-				<option>--문항 유형 선택--</option>
+				<option value="0">--문항 유형 선택--</option>
 				<option value="10">다항선택형</option>
 				<option value="20">서열형</option>
 				<option value="30">개방형</option>
@@ -33,13 +33,13 @@
 		<div>
 			<div class="class_10">
 				<ol>
-					<li><input type="radio" name="ans"><input type="text" name="ans" value="응답1" /><button>삭제</button></li>
+					<li><input type="radio" name="ans"><input type="text" name="ans" placeholder="응답1" /><button>삭제</button></li>
 				</ol>
 				<button>항목 추가</button>
 			</div>
 			<div class="class_20">
 				<ul>
-					<li><input type="checkbox" name="ans"><input type="text" name="ans" value="응답1" /><button>삭제</button></li>
+					<li><input type="checkbox" name="ans"><input type="text" name="ans" placeholder="응답1" /><button>삭제</button></li>
 				</ul>
 				<button>항목 추가</button>
 				<input type="number" name="selectable" />
