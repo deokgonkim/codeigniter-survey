@@ -71,6 +71,9 @@ class Survey_model extends CI_Model {
 		return $query->result();
 	}
 
+	/**
+	 * 설문 작성
+	 */
 	public function create($data) {
 		if ( ! $data ) {
 			throw new Exception('No data provided');
@@ -82,5 +85,51 @@ class Survey_model extends CI_Model {
 		$this->db->insert($this->table_name, $data);
 		$insert_id = $this->db->insert_id();
 		return $insert_id;
+	}
+
+	/**
+	 * 문항 작성
+	 */
+	public function create_item($data) {
+		if ( ! $data ) {
+			throw new Exception('No data provided');
+		}
+		$this->db->insert('survey_item', $data);
+		$insert_id = $this->db->insert_id();
+		return $insert_id;
+	}
+
+	/**
+	 * 문항 수정
+	 */
+	public function modify_item($item_id, $data) {
+		if ( ! $data ) {
+			throw new Exception('No data provided');
+		}
+		$this->db->where('id', $data[id]);
+		$this->db->update('survey_item', $data);
+	}
+
+	/**
+	 * 문항 답변 등록
+	 */
+	public function create_item_answer($item, $data) {
+		if ( ! $data ) {
+			throw new Exception('No data provided');
+		}
+		$this->db->insert('survey_item_answers', $data);
+		$insert_id = $this->db->insert_id();
+		return $insert_id;
+	}
+
+	/**
+	 * 문항 답변 수정
+	 */
+	public function modify_item_answer($item, $data) {
+		if ( ! $data ) {
+			throw new Exception('No data provided');
+		}
+		$this->db->where('item_id', $item_id);
+		$this->db->update('survey_item_answer', $data);
 	}
 }

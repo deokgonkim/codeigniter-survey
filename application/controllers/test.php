@@ -8,6 +8,7 @@ class Test extends Base_Controller {
 		$this->load->model('User_model');
 		$this->load->model('Group_model');
 		$this->load->model('Survey_model');
+		$this->load->model('Survey_item_model');
 		$this->load->model('Notice_model');
 	}
 
@@ -43,6 +44,11 @@ class Test extends Base_Controller {
 	public function notice_view() {
 		header('Content-Type: text/html; charset=UTF-8');
 		echo 'notice view?<br />' . print_r($this->Notice_model->get_notice_by_id(1), TRUE);
+	}
+
+	public function survey_items($survey_id) {
+		header('Content-Type: text/html; charset=UTF-8');
+		echo '<pre>' . print_r($this->Survey_item_model->get_survey_item_with_answers($survey_id), TRUE) . '</pre>';
 	}
 
 	/**

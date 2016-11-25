@@ -21,6 +21,8 @@ class Setup extends CI_Controller {
 		$this->load->model('setup/Group_table');
 		$this->load->model('setup/Group_member_table');
 		$this->load->model('setup/Surveys_table');
+		$this->load->model('setup/Survey_item_table');
+		$this->load->model('setup/Survey_item_answer_table');
 		$this->load->model('setup/Survey_inbox_table');
 		$this->load->model('setup/Notices_table');
 	}
@@ -113,6 +115,28 @@ class Setup extends CI_Controller {
 		}
 		$i ++;
 
+		$table_name = 'survey_item';
+		$data['tables'][$i]['name'] = $table_name;
+		if ( !$this->db->table_exists($table_name) ) {
+			$this->Survey_item_table->create_table();
+			$this->Survey_item_table->fulfill_table();
+			$data['tables'][$i]['status'] = 'OK';
+		} else {
+			$data['tables'][$i]['status'] = 'Already exists';
+		}
+		$i ++;
+
+		$table_name = 'survey_item_answer';
+		$data['tables'][$i]['name'] = $table_name;
+		if ( !$this->db->table_exists($table_name) ) {
+			$this->Survey_item_answer_table->create_table();
+			$this->Survey_item_answer_table->fulfill_table();
+			$data['tables'][$i]['status'] = 'OK';
+		} else {
+			$data['tables'][$i]['status'] = 'Already exists';
+		}
+		$i ++;
+
 		$table_name = 'survey_inbox';
 		$data['tables'][$i]['name'] = $table_name;
 		if ( !$this->db->table_exists($table_name) ) {
@@ -178,6 +202,16 @@ class Setup extends CI_Controller {
 
 		$data['tables'][$i]['name'] = 'surveys';
 		$this->Surveys_table->drop_table();
+		$data['tables'][$i]['status'] = 'OK';
+		$i ++;
+
+		$data['tables'][$i]['name'] = 'survey_item';
+		$this->Survey_item_table->drop_table();
+		$data['tables'][$i]['status'] = 'OK';
+		$i ++;
+
+		$data['tables'][$i]['name'] = 'survey_item_answer';
+		$this->Survey_item_answer_table->drop_table();
 		$data['tables'][$i]['status'] = 'OK';
 		$i ++;
 

@@ -12,6 +12,7 @@ class Surveys_manage extends Subpage_Controller {
 		$this->load->helper('form');
 		$this->load->library('form_validation');
 		$this->load->model('Survey_model');
+		$this->load->model('Survey_item_model');
 	}
 
 	/**
@@ -77,12 +78,54 @@ class Surveys_manage extends Subpage_Controller {
 		$this->load->view('templates/main_footer', $data);
 	}
 
-	public function save_item($survey_id = 0, $item_id = 0) {
-		$this->logger->debug('survey_id : ' . $this->input->post('survey_id'));
-		$this->logger->debug('item_id : ' . $this->input->post('item_id'));
-		$this->logger->debug('val1 : ' . $this->input->post('val1'));
+	/**
+	 * 설문조사 관리 > 설문조사 작성 > (설문 문항 작성 화면) > (설문 문항 가져오기)
+	 */
+	public function get_items($survey_id = 0) {
+		$items = $this->Survey_item_model->get_survey_item_with_answers($survey_id);
+		$this->output->set_content_type('application/json');
+		$this->output->set_output(json_encode($items));
 	}
 
+	/**
+	 * 설문조사 관리 > 설문조사 작성 > (설문 문항 작성 화면) > (문항 저장)
+	 *
+	 * 문항 저장시 호출된다. (ajax)
+	 */
+	public function save_item() {
+		$this->logger->debug('survey_id : ' . $this->input->post('survey_id'));
+		$this->logger->debug('item_id : ' . $this->input->post('item_id'));
+		$this->logger->debug('title : ' . $this->input->post('title'));
+		$this->logger->debug('class : ' . $this->input->post('class'));
+		$this->logger->debug('val1 : ' . print_r($this->input->post('values'), TRUE));
+		$survey = $this->Survey_model->get_survey($this->input->post('survey_id'));
+		if ( ! $survey ) {
+			$this->logger->debug('No survey found : ' . $this->input->post('survey_id'));
+			throw new Exception('No survey found');
+		}
+		$survey_item = $this->Survey_item_model->get_survey_item($this->input->post('item_id'));
+		if ( ! $survey_item ) {
+			$data['survey_id'] = $this->input->post('survey_id');
+			$data['id'] = $this->input->post('item_id');
+			$data['title'] = $this->input->post('title');
+			$data['class'] = $this->input->post('class');
+			$this->Survey_item_model->create($data);
+		} else {
+			$data['survey_id'] = $this->input->post('survey_id');
+			$data['id'] = $this->input->post('item_id');
+			$data['title'] = $this->input->post('title');
+			$data['class'] = $this->input->post('class');
+			$this->Survey_item_model->modify($this->input->post('item_id'), $data);
+		}
+		$this->Survey_item_model->delete_answers($this->input->post('item_id'));
+		$this->Survey_item_model->create_answers($this->input->post('item_id'), $this->input->post('values'));
+	}
+
+	/**
+	 * 날짜 형식을 검증한다.
+	 *
+	 * yyyy/mm/dd 형식으로 입력되었는지 확인한다.
+	 */
 	public function date_valid($date) {
 		$parts = explode("/", $date);
 		if (count($parts) == 3) {
