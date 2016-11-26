@@ -34,6 +34,17 @@ class Surveys_manage extends Subpage_Controller {
 	}
 
 	/**
+	 * 설문조사 관리 > 설문조사 목록 > (설문조사 보기)
+	 */
+	public function view($survey_id) {
+		$data = array();
+		$data['survey'] = $this->Survey_model->get_survey($survey_id);
+		$this->load->view('templates/main_header', $data);
+		$this->load->view('surveys_manage/view', $data);
+		$this->load->view('templates/main_footer', $data);
+	}
+
+	/**
 	 * 설문조사 관리 > 설문조사 작성
 	 */
 	public function create() {
@@ -119,6 +130,34 @@ class Surveys_manage extends Subpage_Controller {
 		}
 		$this->Survey_item_model->delete_answers($this->input->post('item_id'));
 		$this->Survey_item_model->create_answers($this->input->post('item_id'), $this->input->post('values'));
+	}
+
+	/**
+	 * (설문 수신 대상자 선택 화면)
+	 */
+	public function select_recipient() {
+		$data = array();
+		$data['preset'] = array(
+			0 => '--선택--',
+			1 => '신규',
+			2 => '재학생'
+		);
+		$data['criteria'] = array(
+			0 => '이름',
+			1 => '그룹',
+			3 => '속성1',
+			4 => '속성2'
+		);
+		$this->load->view('templates/header', $data);
+		$this->load->view('surveys_manage/select_recipient', $data);
+		$this->load->view('templates/footer', $data);
+	}
+
+	/**
+	 * (설문 대상자 조회)
+	 */
+	public function filter_recipients() {
+		$type = $this->input->post('type');
 	}
 
 	/**

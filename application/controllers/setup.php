@@ -24,6 +24,7 @@ class Setup extends CI_Controller {
 		$this->load->model('setup/Survey_item_table');
 		$this->load->model('setup/Survey_item_answer_table');
 		$this->load->model('setup/Survey_inbox_table');
+		$this->load->model('setup/Survey_outbox_table');
 		$this->load->model('setup/Notices_table');
 	}
 
@@ -148,6 +149,17 @@ class Setup extends CI_Controller {
 		}
 		$i ++;
 
+		$table_name = 'survey_outbox';
+		$data['tables'][$i]['name'] = $table_name;
+		if ( !$this->db->table_exists($table_name) ) {
+			$this->Survey_outbox_table->create_table();
+			$this->Survey_outbox_table->fulfill_table();
+			$data['tables'][$i]['status'] = 'OK';
+		} else {
+			$data['tables'][$i]['status'] = 'Already exists';
+		}
+		$i ++;
+
 		$table_name = 'notices';
 		$data['tables'][$i]['name'] = $table_name;
 		if ( !$this->db->table_exists($table_name) ) {
@@ -217,6 +229,11 @@ class Setup extends CI_Controller {
 
 		$data['tables'][$i]['name'] = 'survey_inbox';
 		$this->Survey_inbox_table->drop_table();
+		$data['tables'][$i]['status'] = 'OK';
+		$i ++;
+
+		$data['tables'][$i]['name'] = 'survey_outbox';
+		$this->Survey_outbox_table->drop_table();
 		$data['tables'][$i]['status'] = 'OK';
 		$i ++;
 
